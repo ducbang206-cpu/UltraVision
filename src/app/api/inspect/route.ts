@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
 const WORKFLOW_URL =
-  "https://serverless.roboflow.com/ducbang206-gmail-com/workflows/kiem-tra-hang-sai-vi-tri-1789031047106";
+  "https://serverless.roboflow.com/bui-duc-bang-_fragrance/workflows/kiem-tra-hang-sai-vi-tri";
+
 
 export async function POST(request: Request) {
   const apiKey = process.env.ROBOFLOW_API_KEY;
 
   if (!apiKey) {
+    
     return NextResponse.json(
       { error: "ROBOFLOW_API_KEY chưa được cấu hình." },
       { status: 500 }
@@ -76,19 +78,25 @@ export async function POST(request: Request) {
 
     const outputImage = output.output_image?.value;
 
-    return NextResponse.json({
-      outputImage: outputImage
-        ? `data:image/jpeg;base64,${outputImage}`
-        : null,
-      summary: output.audit_summary ?? null,
-      correctCount: output.correct_count ?? 0,
-      misplacedCount: output.misplaced_count ?? 0,
-      unknownCount: output.unknown_count ?? 0,
-      misplacedPercent: output.misplaced_percent ?? 0,
-      unknownPercent: output.unknown_percent ?? 0,
-      isCompliant: output.is_compliant ?? false,
-      instructions: output.instructions ?? [],
-    });
+   return NextResponse.json({
+  outputImage: outputImage
+    ? `data:image/jpeg;base64,${outputImage}`
+    : null,
+  summary: output.audit_summary ?? null,
+  correctCount: output.correct_count ?? 0,
+  misplacedCount: output.misplaced_count ?? 0,
+  unknownCount: output.unknown_count ?? 0,
+  misplacedPercent: output.misplaced_percent ?? 0,
+  unknownPercent: output.unknown_percent ?? 0,
+  isCompliant: output.is_compliant ?? false,
+  instructions: output.instructions ?? [],
+
+  // Xác nhận kết quả đã được đồng bộ vào Vision Events
+  syncEventId: output.sync_event_id ?? null,
+  syncError: output.sync_error ?? false,
+  syncMessage: output.sync_message ?? null,
+});
+
   } catch (error) {
     console.error("Warehouse audit failed:", error);
 
